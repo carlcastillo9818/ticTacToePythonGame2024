@@ -1,4 +1,8 @@
 '''
+
+Continue working on game with Henry.
+4-14-24
+
 Posted on Github.
 4-10-24
 '''
@@ -105,7 +109,6 @@ before allowing the symbol to be placed down or it will prompt the user to enter
 """
 def playersMove(player_symbol, game_board,enemy_symbol):
     print("\nplayersMove function called")
-    print(player_symbol)
 
     # a dictionary to keep track of numbers already placed down by the user in previous turns
     spaces_taken_already = {1:game_board[0], 2:game_board[2], 3:game_board[4],
