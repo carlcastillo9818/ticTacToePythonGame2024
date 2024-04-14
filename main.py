@@ -1,6 +1,8 @@
 '''
+For next time: test the program with Henry to see how smart the AI is.
 
-Continue working on game with Henry.
+Continued working on game with Henry,we added code for enemy AI to detect when
+there's only one empty space left on a row and then it will place its symbol there.
 4-14-24
 
 Posted on Github.
@@ -94,7 +96,7 @@ This function will force the users game position choice to be a valid number bet
 """
 def getValidChoice(player_symbol):
     # use try-except block to handle ValueError
-    choice = int(input(f"Select where you want to place your {player_symbol} (type in 1 - 9): "))
+    choice = int(input(f"\nSelect where you want to place your {player_symbol} (type in 1 - 9): "))
     # this while loop will handle input validation if user doesn't enter a valid digit in the range
     while not (1 <= choice <= 9):
         choice = int(input(f"That number falls outside the range of board positions you can pick from. Please "
@@ -108,8 +110,6 @@ This function allows the player to select where they want to put their game symb
 before allowing the symbol to be placed down or it will prompt the user to enter a valid number repeatedly.
 """
 def playersMove(player_symbol, game_board,enemy_symbol):
-    print("\nplayersMove function called")
-
     # a dictionary to keep track of numbers already placed down by the user in previous turns
     spaces_taken_already = {1:game_board[0], 2:game_board[2], 3:game_board[4],
                             4:game_board[5], 5:game_board[7], 6:game_board[9],
@@ -146,12 +146,6 @@ def AImove(enemy_symbol, game_board, player_symbol,last_position_index):
     10 12 14
     '''
 
-
-    # horizontal game board positions
-    h_dict1 = {1: [game_board[0], game_board[2], game_board[4]]}
-    h_dict2 = {2: [game_board[5], game_board[7], game_board[9]]}
-    h_dict3 = {3: [game_board[10], game_board[12], game_board[14]]}
-
     # vertical game board positions
     v_array1 = [game_board[0], game_board[5], game_board[10]]
     v_array2 = [game_board[2], game_board[7], game_board[12]]
@@ -160,6 +154,12 @@ def AImove(enemy_symbol, game_board, player_symbol,last_position_index):
     # diagonal game board positions
     d_array1 = [game_board[0], game_board[7], game_board[14]]
     d_array2 = [game_board[4], game_board[7], game_board[10]]
+
+    # horizontal game board positions
+    h_dict1 = {1: [game_board[0], game_board[2], game_board[4]]}
+    h_dict2 = {2: [game_board[5], game_board[7], game_board[9]]}
+    h_dict3 = {3: [game_board[10], game_board[12], game_board[14]]}
+
 
     # call the function to activate the AI's strategy via a custom algorithm
     '''
@@ -202,7 +202,7 @@ In this function, the enemy AI can detect when user has 1 or 2 symbols placed do
 place a symbol near it.
 '''
 def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
-    print("\ninside enemyDetectUserVictory function")
+    print("\ninside detectUserSymbolsOnRows function")
 
     # boolean flag var that will indicate whether the row was full or not
     row_full = False
@@ -213,42 +213,49 @@ def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
     # initialize list of indexes (the indexes of the elements on the game board)
     # if the row number has an ID value of 1, 2,or 3 then it correponds to that specific row so store the appropriate index numbers in the list
     if row_number == 1:
-        print("row number is 1")
+        #print("row number is 1")
         row_idx_list = [0, 2, 4]
     elif row_number == 2:
-        print("row number is 2")
+        #print("row number is 2")
+        #x = 0 1 2
+        #y = 5 7 9
         row_idx_list = [5, 7, 9]
     else:
-        print("row number is 3")
+        #print("row number is 3")
         row_idx_list = [10, 12, 14]
 
     # check if the row is full already (no underscores remaining), if true then do nothing and go to the next row
     if h_dict[row_number].count("_") == 0:
-        print("this row has no empty spaces left, place symbol on next row.")
+        #print("this row has no empty spaces left, place symbol on next row.")
         row_full = True
     elif h_dict[row_number].count("_") == 1:
         print("ONLY ONE EMPTY SPACE LEFT")
-        '''
-        4-7-24
-        find the INDEX of that one empty space, and make the enemy AI place its symbol there.
-        That should force the AI to not place a symbol over its old symbol.
-        '''
+
+        # find the INDEX of the empty space _ and then place the enemy symbol there
+        x = h_dict[row_number].index("_")
+        h_dict[row_number][x] = enemy_symbol
+
+        # IGNORE THIS OLD CODE: now use X var to identify the correct index value in row_idx_list
+        #y = row_idx_list[x]
+
+        # finally update the GAME BOARD at the correct index with the correct value
+        game_board[row_idx_list[x]] = h_dict[row_number][x]
     else:
-        # detect if user has placed ONE symbol in the specific row (indicated by row number)
+        # detect if user has placed ONE symbol in the specific dictionary row (indicated by row number)
         if h_dict[row_number].count(player_symbol) == 1:
             print(f"AI has detected player has placed one symbol down on row {row_number}.")
             # right-most position has player symbol OR left-most position has player symbol
             if h_dict[row_number][0] == player_symbol or h_dict[row_number][2] == player_symbol:
-                print("AI has detected player has placed one symbol on the LEFT MOST space or RIGHT MOST space.")
+                #print("AI has detected player has placed one symbol on the LEFT MOST space or RIGHT MOST space.")
                 # CHANGE THE SECOND ELEMENT OF THE LIST TO THE ENEMY SYMBOL
                 h_dict[row_number][1] = enemy_symbol
-                print(f"The value of h_dict[row_number][1] is {h_dict[row_number][1]}")
+                #print(f"The value of h_dict[row_number][1] is {h_dict[row_number][1]}")
                 # CHANGE THE GAME BOARD MIDDLE VALUE (ON THE CORRECT ROW) TO THE ENEMY SYMBOL
                 game_board[row_idx_list[1]] = h_dict[row_number][1]
-                print(f"The value of game_board[row_idx_list[1]] is {game_board[row_idx_list[1]]}")
+                #print(f"The value of game_board[row_idx_list[1]] is {game_board[row_idx_list[1]]}")
             # middle position has player symbol (so place enemy symbol to the left or right RANDOMLY)
             if h_dict[row_number][1] == player_symbol:
-                print("AI has detected player has placed one symbol on the MIDDLE SPACE.")
+                #print("AI has detected player has placed one symbol on the MIDDLE SPACE.")
                 # use the random library
                 enemy_random_choice = random.randint(0, 1)
                 # CHANGE THE FIRST ELEMENT TO THE ENEMY SYMBOL
@@ -265,15 +272,42 @@ def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
                     # THIRD ELEMENT WAS SET TO THE ENEMY SYMBOL SO CHANGE THE GAME BOARD RIGHT MOST VALUE (ON THE CORRECT ROW) TO ENEMY SYMBOL
                     # old game_board[4] = h_dict[2]
                     game_board[row_idx_list[2]] = h_dict[row_number][2]
-                print(f"The value of h_dict[row_number][0] is {h_dict[row_number][0]}")
-                print(f"The value of h_dict[row_number][2] is {h_dict[row_number][2]}")
-                print(f"The value of game_board[row_idx_list[0]] is {game_board[row_idx_list[0]]} and value of game_board[row_idx_list[2]] is {game_board[row_idx_list[2]]}")
+                #print(f"The value of h_dict[row_number][0] is {h_dict[row_number][0]}")
+                #print(f"The value of h_dict[row_number][2] is {h_dict[row_number][2]}")
+                #print(f"The value of game_board[row_idx_list[0]] is {game_board[row_idx_list[0]]} and value of game_board[row_idx_list[2]] is {game_board[row_idx_list[2]]}")
         elif h_dict[row_number].count(player_symbol) == 0:
             print(f"AI has detected 0 player symbols on row {row_number}.")
 
-            # placeholder code below - delete it later if you want the symbol to go elsewhere.
-            # h_dict[row_number][0] = enemy_symbol
-            # game_board[row_idx_list[0]] = h_dict[row_number][0]
+            # place enemy symbol on a random space in the row
+            # use the random library
+            enemy_random_choice = random.randint(0, 2)
+            # CHANGE THE FIRST ELEMENT TO THE ENEMY SYMBOL
+            if enemy_random_choice == 0:
+                h_dict[row_number][0] = enemy_symbol
+            elif enemy_random_choice == 1:
+                # CHANGE THE SECOND ELEMENT TO THE ENEMY SYMBOL
+                h_dict[row_number][1] = enemy_symbol
+            else:
+                # CHANGE THE THIRD ELEMENT TO THE ENEMY SYMBOL
+                h_dict[row_number][2] = enemy_symbol
+
+
+            # FIRST ELEMENT WAS SET TO THE ENEMY SYMBOL SO CHANGE THE GAME BOARD LEFT MOST VALUE (ON THE CORRECT ROW) TO ENEMY SYMBOL
+            if h_dict[row_number][0] == enemy_symbol:
+                game_board[row_idx_list[0]] = h_dict[row_number][0]
+            elif  h_dict[row_number][1] == enemy_symbol:
+                # SECOND ELEMENT WAS SET TO THE ENEMY SYMBOL SO CHANGE THE GAME BOARD MIDDLE MOST VALUE (ON THE CORRECT ROW) TO ENEMY SYMBOL
+                game_board[row_idx_list[1]] = h_dict[row_number][1]
+            else:
+                # THIRD ELEMENT WAS SET TO THE ENEMY SYMBOL SO CHANGE THE GAME BOARD RIGHT MOST VALUE (ON THE CORRECT ROW) TO ENEMY SYMBOL
+                game_board[row_idx_list[2]] = h_dict[row_number][2]
+            #print(f"The value of h_dict[row_number][0] is {h_dict[row_number][0]}")
+            #print(f"The value of h_dict[row_number][1] is {h_dict[row_number][1]}")
+            #print(f"The value of h_dict[row_number][2] is {h_dict[row_number][2]}")
+            #print(f"The value of game_board[row_idx_list[0]] is {game_board[row_idx_list[0]]}"
+            #      f"and value of game_board[row_idx_list[1]] is {game_board[row_idx_list[1]]} "
+            #      f"and value of game_board[row_idx_list[2]] is {game_board[row_idx_list[2]]}")
+
         elif h_dict[row_number].count(player_symbol) == 2:
             print(f"AI has detected 2 player symbols on row {row_number}.")
 
@@ -288,15 +322,16 @@ def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
             scenario 3)   X | _ | X
              '''
             if h_dict[row_number][1] == player_symbol and h_dict[row_number][2] == player_symbol:
-                print("player symbol detected on MIDDLE SPACE AND RIGHT-MOST SPACE")
+                #print("player symbol detected on MIDDLE SPACE AND RIGHT-MOST SPACE")
 
                 h_dict[row_number][0] = enemy_symbol
-                print(f"The value of h_dict[row_number][0] is {h_dict[row_number][0]}")
+                #print(f"The value of h_dict[row_number][0] is {h_dict[row_number][0]}")
                 # CHANGE THE GAME BOARD LEFT-MOST VALUE (ON THE CORRECT ROW) TO THE ENEMY SYMBOL
                 game_board[row_idx_list[0]] = h_dict[row_number][0]
 
         else:
-            print("this row has been completely filled with just player symbols (keep this for testing purposes).")
+            #print("this row has been completely filled with just player symbols, moving on to next row (keep this for testing purposes).")
+            row_full = True
     return row_full
 
 
@@ -362,7 +397,7 @@ def checkIfMatchContinues2(game_board, player_symbol, enemy_symbol):
         continueMatch = False
     else:
         print("no three in a row found on this game board!")
-    print("exiting checkIfMatchContinues2 function")
+    #print("exiting checkIfMatchContinues2 function")
     return continueMatch
 
 
