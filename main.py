@@ -1,5 +1,10 @@
 '''
-For next time: test the program with Henry to see how smart the AI is.
+Henry, when you have a chance, look at this program on your own and add some more functionality to it
+if you want. The game works for the most part so you can play against the AI all you want. Enjoy.
+
+On Line 254 inside the detectUserSymbolOnRows function, MAYBE CONSIDER WRITING AN IF-ELSE BRANCH HERE
+SO THE ENEMY CAN PLACE TO THE RIGHT OR THE OTHER REMAINING SPACE.
+4-21-24
 
 Continued working on game with Henry,we added code for enemy AI to detect when
 there's only one empty space left on a row and then it will place its symbol there.
@@ -11,12 +16,14 @@ Posted on Github.
 import random  # for randomizing user choice (they use X or  they use O)
 
 
+
 def displayGameBoard(game_board):
     # loop through the grid
     # x is used as a counter (x = 0, x = 1, x = 2, etc...)
     # you can use a loop to repeat statements a certain amount of times
     # in this case, the loop will go through EACH element on the game board LIST and print each one out
     # the total number of iterations that the loop will go through is 15 iterations
+    print("")
     for x in range(0, len(game_board)):
         # when we reach CERTAIN elements, GO TO THE NEXT LINE
         if x == 5 or x == 10 or x == 15:
@@ -27,6 +34,8 @@ def displayGameBoard(game_board):
         # next five elements are on second row
         # last five elements are on the third row
         print(game_board[x], end='')
+
+    print("")
 
 
 def setUserSymbol():
@@ -78,7 +87,7 @@ def placeOnValidSpot(choice,game_board,player_symbol,enemy_symbol):
     elif choice == 9:
         game_board[14] = player_symbol
         user_position_idx = 14
-    print(f"Last position that player placed their symbol was at index {user_position_idx}")
+    #print(f"Last position that player placed their symbol was at index {user_position_idx}")
     displayGameBoard(game_board)  # display game board after the user has made valid move (showing current status of the board)
 
     # after player makes a valid move, end the game if three in a row is detected
@@ -137,7 +146,7 @@ track of all the horizontal, vertical, and diagonal game spaces and any user sym
 it detects the last user position was on a specific space using a subfunction then it will place near that space.
 '''
 def AImove(enemy_symbol, game_board, player_symbol,last_position_index):
-    print("\ninside AI move function")
+    #print("\ninside AI move function")
 
     '''
     game board VALID POSITION INDEXES
@@ -202,7 +211,7 @@ In this function, the enemy AI can detect when user has 1 or 2 symbols placed do
 place a symbol near it.
 '''
 def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
-    print("\ninside detectUserSymbolsOnRows function")
+    #print("\ninside detectUserSymbolsOnRows function")
 
     # boolean flag var that will indicate whether the row was full or not
     row_full = False
@@ -243,16 +252,16 @@ def detectUserSymbolsOnRows(enemy_symbol, game_board, player_symbol, h_dict):
     else:
         # detect if user has placed ONE symbol in the specific dictionary row (indicated by row number)
         if h_dict[row_number].count(player_symbol) == 1:
-            print(f"AI has detected player has placed one symbol down on row {row_number}.")
+            #print(f"AI has detected player has placed one symbol down on row {row_number}.")
             # right-most position has player symbol OR left-most position has player symbol
             if h_dict[row_number][0] == player_symbol or h_dict[row_number][2] == player_symbol:
-                #print("AI has detected player has placed one symbol on the LEFT MOST space or RIGHT MOST space.")
+                ''' 4-21-24 MAYBE CONSIDER WRITING AN IF-ELSE BRANCH HERE 
+                SO THE ENEMY CAN PLACE TO THE RIGHT OR THE OTHER REMAINING SPACE
+                '''
                 # CHANGE THE SECOND ELEMENT OF THE LIST TO THE ENEMY SYMBOL
                 h_dict[row_number][1] = enemy_symbol
-                #print(f"The value of h_dict[row_number][1] is {h_dict[row_number][1]}")
                 # CHANGE THE GAME BOARD MIDDLE VALUE (ON THE CORRECT ROW) TO THE ENEMY SYMBOL
                 game_board[row_idx_list[1]] = h_dict[row_number][1]
-                #print(f"The value of game_board[row_idx_list[1]] is {game_board[row_idx_list[1]]}")
             # middle position has player symbol (so place enemy symbol to the left or right RANDOMLY)
             if h_dict[row_number][1] == player_symbol:
                 #print("AI has detected player has placed one symbol on the MIDDLE SPACE.")
@@ -351,7 +360,7 @@ def setEnemySymbol(player_symbol):
 and if three of the same symbol are detected vertically, horizontally, diagonally then
 END THE GAME (ALTERNATIVE ALGORITHM)'''
 def checkIfMatchContinues2(game_board, player_symbol, enemy_symbol):
-    print("\ncheckIfMatchContinues2 function called")
+    #print("\ncheckIfMatchContinues2 function called")
     # ALTERNATE SOLUTION : CONSIDER EACH ROW, COLUMN, AND DIAGONAL AS ITS OWN ARRAY, AND JUST CHECK THOSE ARRAYS IF THEY HAVE THREE MATCHING ELEMENTS!
 
     # horizontal game board positions
@@ -396,7 +405,7 @@ def checkIfMatchContinues2(game_board, player_symbol, enemy_symbol):
         print("all elements are the same on the second diagonal row")
         continueMatch = False
     else:
-        print("no three in a row found on this game board!")
+        print("\nno three in a row found on this game board!")
     #print("exiting checkIfMatchContinues2 function")
     return continueMatch
 
@@ -425,7 +434,7 @@ def main():
         # store the INDEX of the position that the user placed their last symbol at
         # pass this var into the AI move function so the AI knows which row to focus on and which rows to ignore
         last_position_index = playersMove(player_symbol, game_board,enemy_symbol)
-        print(f"\nlast_position_index value after player function call is {last_position_index}")
+        #print(f"\nlast_position_index value after player function call is {last_position_index}")
         AImove(enemy_symbol, game_board, player_symbol, last_position_index)
 main()
 
